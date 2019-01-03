@@ -121,18 +121,18 @@ def callback_clicked_food(payload, event):
     sender_id = event.sender_id
     results = yelp.get_results("Food")
     rv = general_query(results)
-    page.send(sender.id, rv)
+    page.send(sender_id, rv)
     
 @page.callback(['Dessert'])
 def callback_clicked_dessert(payload, event):
     sender_id = event.sender_id
     results = yelp.get_results("Dessert")
     rv = general_query(results)
-    page.send(sender.id, rv)
+    page.send(sender_id, rv)
 
 @page.callback(['Bar'])
 def callback_clicked_bar(payload, event):
     sender_id = event.sender_id
     results = yelp.get_results("Bar")
     rv = general_query(results)
-    page.send(sender.id, rv)
+    page.send(sender_id, rv)
