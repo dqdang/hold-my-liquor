@@ -17,23 +17,8 @@ def notify(new, restock):
     for sub in restock.keys():
         page.send(sub, "RESTOCK:\n"+"\n".join(list(zip(*restock[sub]))[1]))
 
-def alt_current(url, site, store_name, ppath, upath, prod_names, prod_urls):
-    print("Checking if new products are on {} on proxy: {}".format(store_name, site.proxy_used))
-    if not site.get().ok:
-        print("Proxy or website is unresponsive. Trying again...")
-        site.proxy_used = site.sockets.pop(0)
-        return False
-    
-    tree = html.fromstring(str(site))
-    tree.make_links_absolute(url)
-
-    prod_names.extend([store_name+pname.split() for pname in tree.xpath(ppath)])
-    prod_urls.extend(tree.xpath(upath))
-
-    return True
-
 def get_current():
-    url = "https://acrnm.com"
+    url = "https://yelp.com"
     site = ProxyRequests(url)
     
     failures = 0
