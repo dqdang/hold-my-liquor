@@ -55,42 +55,14 @@ def create_tables():
     sess.commit()
     sess.close()
 
-def admin_exists(fb_id, sess=start_sess()):
-    return sess.query(Admins).filter(Admins.user.has(Users.fb_id==fb_id)).scalar()
-
 def user_exists(user, sess=start_sess()):
     return sess.query(Users).filter(Users.fb_id==user).scalar()
 
-def location_exists(loc, sess):
-    return sess.query(Location).filter(Location.loc_name.like(loc)).scalar()
+# def location_exists(loc, sess):
+#     return sess.query(Location).filter(Location.loc_name.like(loc)).scalar()
 
-def current_exists(cur, sess):
-    return sess.query(Current).filter(Current.product.has(Location.location_name==cur)).scalar()
-
-def new_items(prod_names, prod_urls=None):
-    new = []
-    restock = {}
-    sess = start_sess()
-
-    for i, name in enumerate(prod_names):
-        prod = prod_exists(name,sess)
-        cur = current_exists(name,sess)
-        # new product
-        if not prod:
-            if(prod_urls):
-                new.append((name, prod_urls[i]))
-            else:
-                new.append((name, None))
-        # restock
-        if prod and (not cur):
-            for sub in prod.subscribers:
-                if prod_urls:
-                    restock.setdefault(sub.fb_id, []).append((name, prod_urls[i]))
-                else:
-                    restock.setdefault(sub.fb_id, []).append(name)
-    
-    sess.close()
-    return new, restock
+# def current_exists(cur, sess):
+#     return sess.query(Current).filter(Current.product.has(Location.location_name==cur)).scalar()
 
 # def insert_products(vlist):
 #     sess = start_sess()
