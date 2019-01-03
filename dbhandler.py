@@ -108,21 +108,6 @@ def new_items(prod_names, prod_urls=None):
 
 #     return prods
 
-# def insert_admin(fb_id, sess=start_sess()):
-    
-#     user = user_exists(fb_id, sess)
-#     if admin_exists(fb_id, sess) or not user:
-#         sess.close()
-#         return False
-
-#     new_admin = Admins()
-#     new_admin.user = user
-
-#     sess.add(new_admin)
-#     sess.commit()
-#     sess.close()
-#     return True
-
 def insert_user(value):
     sess = start_sess()
     
@@ -166,10 +151,6 @@ def get_object(table, sess=start_sess()):
 # def get_product(prod, sess=start_sess()):
 #     return sess.query(Products).filter(Products.prod_name==prod).first()
 
-# def get_subscribers(prod, sess=start_sess()):
-#     p = sess.query(Products).filter(Products==prod).first()
-#     rv = p.subscribers.all()
-#     return rv
 
 """ Public getters """
 def get_table(table, column):
