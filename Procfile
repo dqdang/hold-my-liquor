@@ -1,2 +1,2 @@
-worker: python monitor.py
+worker: python yelp.py
 web: gunicorn server:app --log-file=-
