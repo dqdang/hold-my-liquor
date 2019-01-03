@@ -19,29 +19,35 @@ class Admins(Base):
     user_id = Column(Integer, ForeignKey('users.id'), primary_key=True)
     user = relationship('Users', uselist=False)
 
+# class Users(Base):
+#     __tablename__ = "users"
+#     id = Column(Integer, primary_key=True)
+#     fb_id = Column(BigInteger, nullable=False, unique=True)
+#     locations = relationship('Location', secondary='current', backref=sql.orm.backref('current', lazy='dynamic'))
+
 class Users(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     fb_id = Column(BigInteger, nullable=False, unique=True)
-    locations = relationship('Location', secondary='current', backref=sql.orm.backref('current', lazy='dynamic'))
+    locations = Column(String, nullable=False, unique=True)
 
-class Location(Base):
-    __tablename__ = "location"
-    id = Column(Integer, primary_key=True)
-    location_name = Column(String, nullable=False, unique=True)
+# class Location(Base):
+#     __tablename__ = "location"
+#     id = Column(Integer, primary_key=True)
+#     location_name = Column(String, nullable=False, unique=True)
     
-    def __eq__(self, other):
-        return self.location_name == other.location_name
+#     def __eq__(self, other):
+#         return self.location_name == other.location_name
 
-class Current(Base):
-    __tablename__ = "current"
-    location_id = Column(Integer, ForeignKey('location.id'), primary_key=True)
-    location = relationship('Location', uselist=False)
+# class Current(Base):
+#     __tablename__ = "current"
+#     location_id = Column(Integer, ForeignKey('location.id'), primary_key=True)
+#     location = relationship('Location', uselist=False)
     
 table_dict = {
         "Users": Users,
-        "Location": Location,
-        "Current": Current
+        # "Location": Location,
+        # "Current": Current
 }
 
 def start_sess():
@@ -91,36 +97,36 @@ def new_items(prod_names, prod_urls=None):
     sess.close()
     return new, restock
 
-def insert_products(vlist):
-    sess = start_sess()
-    prods = []
-    users = get_object(Users, sess)
+# def insert_products(vlist):
+#     sess = start_sess()
+#     prods = []
+#     users = get_object(Users, sess)
 
-    for v in vlist:
-        product = Products(prod_name=v)
-        product.subscribers.extend(users)
-        prods.append(product)
+#     for v in vlist:
+#         product = Products(prod_name=v)
+#         product.subscribers.extend(users)
+#         prods.append(product)
 
-    sess.add_all(prods)
-    sess.commit()
-    sess.close()
+#     sess.add_all(prods)
+#     sess.commit()
+#     sess.close()
 
-    return prods
+#     return prods
 
-def insert_admin(fb_id, sess=start_sess()):
+# def insert_admin(fb_id, sess=start_sess()):
     
-    user = user_exists(fb_id, sess)
-    if admin_exists(fb_id, sess) or not user:
-        sess.close()
-        return False
+#     user = user_exists(fb_id, sess)
+#     if admin_exists(fb_id, sess) or not user:
+#         sess.close()
+#         return False
 
-    new_admin = Admins()
-    new_admin.user = user
+#     new_admin = Admins()
+#     new_admin.user = user
 
-    sess.add(new_admin)
-    sess.commit()
-    sess.close()
-    return True
+#     sess.add(new_admin)
+#     sess.commit()
+#     sess.close()
+#     return True
 
 def insert_user(value):
     sess = start_sess()
@@ -139,39 +145,39 @@ def insert_user(value):
     sess.close()
     return True
 
-def insert_current(vlist, url_list=None):
-    sess = start_sess()
-    prods = []
+# def insert_current(vlist, url_list=None):
+#     sess = start_sess()
+#     prods = []
 
-    sess.query(Current).delete()
+#     sess.query(Current).delete()
 
-    if not vlist:
-        return
+#     if not vlist:
+#         return
 
-    for i, v in enumerate(vlist):
-        prod = get_product(v, sess)
-        curr = Current()
-        curr.product = prod
-        if url_list:
-            curr.prod_url = url_list[i]
-        prods.append(curr)
+#     for i, v in enumerate(vlist):
+#         prod = get_product(v, sess)
+#         curr = Current()
+#         curr.product = prod
+#         if url_list:
+#             curr.prod_url = url_list[i]
+#         prods.append(curr)
 
-    sess.add_all(prods)
-    sess.commit()
-    sess.close()
+#     sess.add_all(prods)
+#     sess.commit()
+#     sess.close()
 
 """ Private getters """
 def get_object(table, sess=start_sess()):
     results = sess.query(table).all()
     return results
 
-def get_product(prod, sess=start_sess()):
-    return sess.query(Products).filter(Products.prod_name==prod).first()
+# def get_product(prod, sess=start_sess()):
+#     return sess.query(Products).filter(Products.prod_name==prod).first()
 
-def get_subscribers(prod, sess=start_sess()):
-    p = sess.query(Products).filter(Products==prod).first()
-    rv = p.subscribers.all()
-    return rv
+# def get_subscribers(prod, sess=start_sess()):
+#     p = sess.query(Products).filter(Products==prod).first()
+#     rv = p.subscribers.all()
+#     return rv
 
 """ Public getters """
 def get_table(table, column):
@@ -180,33 +186,23 @@ def get_table(table, column):
     sess.close()
     return [] if len(results) == 0 else list(zip(*results))[0]
 
-def get_state(fb_id):
-    sess = start_sess()
-    user = user_exists(fb_id, sess)
-    if user:
-        rv = user.state
-        sess.close()
-        return rv
-    sess.close()
-    return None
+# def get_current():
+#     sess = start_sess()
+#     current = sess.query(Products.prod_name).join(Current).all()
+#     sess.close()
+#     return list(zip(*current))[0]
 
-def get_current():
-    sess = start_sess()
-    current = sess.query(Products.prod_name).join(Current).all()
-    sess.close()
-    return list(zip(*current))[0]
+# def get_subscriptions(fb_id):
+#     sess = start_sess()
+#     user = user_exists(fb_id, sess)
 
-def get_subscriptions(fb_id):
-    sess = start_sess()
-    user = user_exists(fb_id, sess)
-
-    if user:
-        rv = [prod.prod_name for prod in user.subscriptions]
-        sess.close()
-        return rv
+#     if user:
+#         rv = [prod.prod_name for prod in user.subscriptions]
+#         sess.close()
+#         return rv
         
-    sess.close()
-    return None
+#     sess.close()
+#     return None
 
 def delete_user(fb_id):
     sess = start_sess()
@@ -222,30 +218,30 @@ def delete_user(fb_id):
     sess.close()
     return False
 
-def change_state(fb_id, state):
-    sess = start_sess()
-    user = user_exists(fb_id, sess)
+# def change_state(fb_id, state):
+#     sess = start_sess()
+#     user = user_exists(fb_id, sess)
 
-    if user:
-        user.state = state
-        sess.commit()
-        sess.close()
-        return True
+#     if user:
+#         user.state = state
+#         sess.commit()
+#         sess.close()
+#         return True
 
-    sess.close()
-    return False
+#     sess.close()
+#     return False
 
-def delete_sub(fb_id, prod_name):
-    sess = start_sess()
-    user = user_exists(fb_id, sess)
-    prod = prod_exists(prod_name, sess)
+# def delete_sub(fb_id, prod_name):
+#     sess = start_sess()
+#     user = user_exists(fb_id, sess)
+#     prod = prod_exists(prod_name, sess)
     
-    if not prod or not user:
-        sess.close()
-        return False
+#     if not prod or not user:
+#         sess.close()
+#         return False
     
-    user.subscriptions.remove(prod)
-    sess.commit()
-    sess.close()
+#     user.subscriptions.remove(prod)
+#     sess.commit()
+#     sess.close()
 
-    return True
+#     return True
