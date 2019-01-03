@@ -8,7 +8,7 @@ import dbhandler as db
 import yppage as yp
 
 def get_results(query):
-    search_results = yp.yelp_api.search_query(term=query[0], sort_by='rating', limit=1)
+    search_results = yp.yelp_api.search_query(term=query[0], location="san jose", sort_by='rating', limit=1)
     return search_results
 
 def get_current():
