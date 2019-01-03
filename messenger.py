@@ -84,7 +84,7 @@ def message_handler(event):
     split = message.split(", ")
     # results = yelp.get_results(split)
     # page.send(results.link)
-    page.send("Hello debugger")
+    page.send(sender_id, "Hello debugger")
     return "Message processed"
 
 @page.handle_delivery
