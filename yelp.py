@@ -1,7 +1,5 @@
-from lxml import html
 from fbpage import page
 from flask import Flask, request
-from proxy_requests import ProxyRequests
 
 import os
 import time
@@ -15,10 +13,7 @@ def get_results(query):
 
 def get_current():
     url = "https://yelp.com"
-    site = ProxyRequests(url)
     
-    failures = 0
-
     # while True:
 
     #     print("Checking if new products are on ACRNM on proxy: {}".format(site.proxy_used))
