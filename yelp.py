@@ -7,15 +7,11 @@ import os
 import time
 import requests
 import dbhandler as db
+import yppage as yp
 
-def notify(new, restock):
-    if new:
-        for user in db.get_table("Users", "fb_id"):
-            page.send(user, "NEW ITEMS\n"+"\n".join(new))
-        print("Notified all users")
-    
-    for sub in restock.keys():
-        page.send(sub, "RESTOCK:\n"+"\n".join(list(zip(*restock[sub]))[1]))
+def get_results(query):
+    search_results = yp.yelp_api.search_query(query)
+    return search_results
 
 def get_current():
     url = "https://yelp.com"
