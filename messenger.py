@@ -83,6 +83,7 @@ def message_handler(event):
     # "san francisco, hot pot" OR "hot pot"
     split = message.split(", ")
     results = yelp.get_results(split)
+    print(results)
     page.send(sender_id, results)
     page.send(sender_id, "Hello debugger")
     return "Message processed"
