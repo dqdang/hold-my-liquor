@@ -10,39 +10,8 @@ import yelp as yelp
 
 password = os.environ["PASSWORD"]
 
-acct_menu_btns = [
-        Template.ButtonPostBack("Food", "MENUPAYLOAD/Food"),
-        Template.ButtonPostBack("Dessert", "MENUPAYLOAD/Dessert"),
-        Template.ButtonPostBack("Bar", "Bar")
-]
-
-simple_menu_btns = [
-        Template.ButtonPostBack("Popular Choices", "MENUPAYLOAD/Popular Choices"),
-]
-
-quick_replies = [
-        QuickReply(title="Yes, subscribe", payload="Yes_r"),
-        QuickReply(title="No", payload="No")        
-]
-
 page.greeting("Click Get Started below to subscribe!!")
 page.show_starting_button("Subscribe")
-
-def p_menu():
-    acct_menu = {"title":"Popular Choices", "type":"nested"}
-    menu = [{"locale": "default", "composer_input_disabled": False, "call_to_actions": [acct_menu]}]
-    call_to_actions = []
-
-    for button in Template.Buttons.convert_shortcut_buttons(acct_menu_btns):
-        call_to_actions.append({
-            "type": "postback",
-            "title": button.title,
-            "payload": button.payload
-        })
-
-    acct_menu["call_to_actions"] = call_to_actions
-
-    page._set_profile_property(pname="persistent_menu", pval=menu)
 
 def general_query(results):
     rv_name = results["businesses"][0]["name"]
@@ -112,35 +81,3 @@ def received_echo(event):
     metadata = message.get("metadata")
     # print("page id : %s , %s" % (page.page_id, page.page_name))
     # print("Received echo for message %s and app %s with metadata %s" % (message_id, app_id, metadata))
-
-@page.callback(['MENUPAYLOAD/(.+)'])
-def callback_clicked_p_menu(payload, event):
-    sender_id = event.sender_id
-    click_menu = payload.split('/')[1]
-    if click_menu == 'Food':
-        callback_clicked_food(payload, event)
-    elif click_menu == 'Dessert':
-        callback_clicked_dessert(payload, event)
-    elif click_menu == 'Bar':
-        callback_clicked_bar(payload, event)
-
-@page.callback(['Food'])
-def callback_clicked_food(payload, event):
-    sender_id = event.sender_id
-    results = yelp.get_results("Food")
-    rv = general_query(results)
-    page.send(sender_id, rv)
-    
-@page.callback(['Dessert'])
-def callback_clicked_dessert(payload, event):
-    sender_id = event.sender_id
-    results = yelp.get_results("Dessert")
-    rv = general_query(results)
-    page.send(sender_id, rv)
-
-@page.callback(['Bar'])
-def callback_clicked_bar(payload, event):
-    sender_id = event.sender_id
-    results = yelp.get_results("Bar")
-    rv = general_query(results)
-    page.send(sender_id, rv)
