@@ -45,6 +45,12 @@ def p_menu():
 
     page._set_profile_property(pname="persistent_menu", pval=menu)
 
+def general_query(results):
+    rv_name = results["businesses"][0]["name"]
+    rv_url = results["businesses"][0]["url"]
+    rv = rv_name + "\n_____\n" + rv_url
+    return rv
+
 def handle_unsub(sender_id):
     page.send(sender_id, "You are unsubscribed, enter access code to subscribe")
 
@@ -74,19 +80,10 @@ def message_handler(event):
     if not message:
         return
 
-#    if message == admin_key:
-#
-#        if db.insert_admin(sender_id):
-#            page.send(sender_id, "Added you as an admin")
-#        else:
-#            page.send(sender_id, "Already an Admin")
     # "san francisco, hot pot" OR "hot pot"
     split = message.split(", ")
     results = yelp.get_results(split)
-    print(results)
-    rv_name = results["businesses"][0]["name"]
-    rv_url = results["businesses"][0]["url"]
-    rv = rv_name + "\n_____\n" + rv_url
+    rv = general_query(results)
     page.send(sender_id, rv)
     return "Message processed"
 
@@ -122,20 +119,20 @@ def callback_clicked_p_menu(payload, event):
 @page.callback(['Food'])
 def callback_clicked_food(payload, event):
     sender_id = event.sender_id
-    subs = db.get_subscriptions(sender_id)
-    if subs:
-        page.send(sender_id, "YOUR SUBS:\n"+"\n".join(subs))
-    else:
-        handle_unsub(sender_id)
-
+    results = yelp.get_results("Food")
+    rv = general_query(results)
+    page.send(sender.id, rv)
+    
 @page.callback(['Dessert'])
 def callback_clicked_dessert(payload, event):
-    page.send(event.sender_id, "CURRENT PRODUCTS:\n"+"\n".join(db.get_current()))
+    sender_id = event.sender_id
+    results = yelp.get_results("Dessert")
+    rv = general_query(results)
+    page.send(sender.id, rv)
 
 @page.callback(['Bar'])
 def callback_clicked_bar(payload, event):
     sender_id = event.sender_id
-    if db.change_state(sender_id, 1):
-        page.send(sender_id, "Insert product name. Make sure name is exact (Press 'Current Products' to see product list)")
-    else:
-        handle_unsub(sender_id)
+    results = yelp.get_results("Bar")
+    rv = general_query(results)
+    page.send(sender.id, rv)
