@@ -86,8 +86,8 @@ def message_handler(event):
     print(results)
     rv_name = results["businesses"][0]["name"]
     rv_url = results["businesses"][0]["url"]
-    page.send(sender_id, rv_name)
-    page.send(sender_id, rv_url)
+    rv = rv_name + "\n_____\n" + rv_url
+    page.send(sender_id, rv)
     return "Message processed"
 
 @page.handle_delivery
