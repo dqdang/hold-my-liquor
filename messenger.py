@@ -6,14 +6,15 @@ import re
 import json
 import requests
 import dbhandler as db
+import yelp as yelp
 
 password = os.environ["PASSWORD"]
 # admin_key = os.environ["ADMIN_KEY"]
 
 acct_menu_btns = [
-        Template.ButtonPostBack("My Subscriptions", "MENUPAYLOAD/Subs"),
-        Template.ButtonPostBack("Remove Notification", "MENUPAYLOAD/Remove"),
-        Template.ButtonPostBack("Unsubscribe", "Unsub")
+        Template.ButtonPostBack("Food", "MENUPAYLOAD/Food"),
+        Template.ButtonPostBack("Dessert", "MENUPAYLOAD/Dessert"),
+        Template.ButtonPostBack("Bar", "Bar")
 ]
 
 simple_menu_btns = [
@@ -29,19 +30,12 @@ page.greeting("Click Get Started below to subscribe!!")
 page.show_starting_button("Subscribe")
 
 def p_menu():
-    acct_menu = {"title":"My Account", "type":"nested"}
+    acct_menu = {"title":"Popular Choices"}
     menu = [{"locale": "default", "composer_input_disabled": False, "call_to_actions": [acct_menu]}]
     call_to_actions = []
 
     for button in Template.Buttons.convert_shortcut_buttons(acct_menu_btns):
         call_to_actions.append({
-            "type": "postback",
-            "title": button.title,
-            "payload": button.payload
-        })
-
-    for button in Template.Buttons.convert_shortcut_buttons(simple_menu_btns):
-        menu[0]["call_to_actions"].append({
             "type": "postback",
             "title": button.title,
             "payload": button.payload
@@ -74,8 +68,8 @@ def received_postback(event):
 @page.handle_message
 def message_handler(event):
     sender_id = event.sender_id
-    message = event.message.get('text')
-    state = db.get_state(sender_id)
+    message = event.message.get('text').lower()
+    message = re.sub("[\W+]", " ", message.upper())
 
     if not message:
         return
@@ -86,26 +80,10 @@ def message_handler(event):
 #            page.send(sender_id, "Added you as an admin")
 #        else:
 #            page.send(sender_id, "Already an Admin")
-
-    if not (message == password) and not (db.user_exists(sender_id)):
-        handle_unsub(sender_id)
-        return
-    elif message == password and db.insert_user(sender_id):
-        page.send(sender_id, "Subbed to all products")
-
-    if(state == 0):
-        if(message.lower() == "unsubscribe"):
-            db.delete_user(sender_id)
-            page.send(sender_id, "Unsubbed, you may now delete the conversation")
-    elif(state == 1):
-        message = re.sub("[\W+]", "_", message.upper())
-        deleted = db.delete_sub(sender_id, message)
-        if(deleted):
-            page.send(sender_id, "Deleted your item")
-        else:
-            page.send(sender_id, "Item not found (product name not exact or you are already unsubscribed to this product)")
-        db.change_state(sender_id, 0)
-
+    # "san francisco, hot pot" OR "hot pot"
+    split = message.split(", ")
+    # results = yelp.get_results(split)
+    # page.send(results.link)
     return "Message processed"
 
 @page.handle_delivery
@@ -130,15 +108,15 @@ def received_message_read(event):
 def callback_clicked_p_menu(payload, event):
     sender_id = event.sender_id
     click_menu = payload.split('/')[1]
-    if click_menu == 'Subs':
-        callback_clicked_subs(payload, event)
-    elif click_menu == 'Products':
-        callback_clicked_prods(payload, event)
-    elif click_menu == 'Remove':
-        callback_clicked_rem(payload, event)
+    if click_menu == 'Food':
+        callback_clicked_food(payload, event)
+    elif click_menu == 'Dessert':
+        callback_clicked_dessert(payload, event)
+    elif click_menu == 'Bar':
+        callback_clicked_bar(payload, event)
 
-@page.callback(['Subs'])
-def callback_clicked_subs(payload, event):
+@page.callback(['Food'])
+def callback_clicked_food(payload, event):
     sender_id = event.sender_id
     subs = db.get_subscriptions(sender_id)
     if subs:
@@ -146,30 +124,14 @@ def callback_clicked_subs(payload, event):
     else:
         handle_unsub(sender_id)
 
-@page.callback(['Products'])
-def callback_clicked_prods(payload, event):
+@page.callback(['Dessert'])
+def callback_clicked_dessert(payload, event):
     page.send(event.sender_id, "CURRENT PRODUCTS:\n"+"\n".join(db.get_current()))
 
-@page.callback(['Remove'])
-def callback_clicked_rem(payload, event):
+@page.callback(['Bar'])
+def callback_clicked_bar(payload, event):
     sender_id = event.sender_id
     if db.change_state(sender_id, 1):
         page.send(sender_id, "Insert product name. Make sure name is exact (Press 'Current Products' to see product list)")
     else:
         handle_unsub(sender_id)
-
-@page.callback(['Unsub'])
-def callback_clicked_unsub(payload, event):
-    sender_id = event.sender_id
-    db.delete_user(sender_id)
-    page.send(sender_id, "Unsubbed, you may now delete the conversation")
-
-@page.callback(['Yes_r'])
-def callback_clicked_yes_r(payload, event):
-    sender_id = event.sender_id
-    db.insert_user(sender_id)
-    page.send(sender_id, "Subbed to all products")
-
-@page.callback(['No'])
-def callback_clicked_no_r(payload, event):
-    pass

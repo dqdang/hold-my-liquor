@@ -23,33 +23,24 @@ class Users(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     fb_id = Column(BigInteger, nullable=False, unique=True)
-    state = Column(Integer, nullable=False, default=0)
-    subscriptions = relationship('Products', secondary='subscriptions', backref=sql.orm.backref('subscribers', lazy='dynamic'))
+    locations = relationship('Location', secondary='current', backref=sql.orm.backref('current', lazy='dynamic'))
 
-class Products(Base):
-    __tablename__ = "products"
+class Location(Base):
+    __tablename__ = "location"
     id = Column(Integer, primary_key=True)
-    prod_name = Column(String, nullable=False, unique=True)
+    location_name = Column(String, nullable=False, unique=True)
     
     def __eq__(self, other):
-        return self.prod_name == other.prod_name
-
-class Subs(Base):
-    __tablename__ = "subscriptions"
-    id = Column(Integer, primary_key=True)
-    prod_id = Column(Integer, ForeignKey('products.id'))
-    user_id = Column(Integer, ForeignKey('users.id'))
+        return self.location_name == other.location_name
 
 class Current(Base):
     __tablename__ = "current"
-    prod_id = Column(Integer, ForeignKey('products.id'), primary_key=True)
-    prod_url = Column(String, nullable=True)
-    product = relationship('Products', uselist=False)
+    location_id = Column(Integer, ForeignKey('location.id'), primary_key=True)
+    location = relationship('Location', uselist=False)
     
 table_dict = {
         "Users": Users,
-        "Products": Products,
-        "Subscriptions": Subs,
+        "Location": Location,
         "Current": Current
 }
 
@@ -69,11 +60,11 @@ def admin_exists(fb_id, sess=start_sess()):
 def user_exists(user, sess=start_sess()):
     return sess.query(Users).filter(Users.fb_id==user).scalar()
 
-def prod_exists(prod, sess):
-    return sess.query(Products).filter(Products.prod_name.like(prod)).scalar()
+def location_exists(loc, sess):
+    return sess.query(Location).filter(Location.loc_name.like(loc)).scalar()
 
-def current_exists(prod_name, sess):
-    return sess.query(Current).filter(Current.product.has(Products.prod_name==prod_name)).scalar()
+def current_exists(cur, sess):
+    return sess.query(Current).filter(Current.product.has(Location.location_name==cur)).scalar()
 
 def new_items(prod_names, prod_urls=None):
     new = []

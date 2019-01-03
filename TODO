@@ -1,0 +1,31 @@
+things to put together:
+
+bot flow - user query to yelp result
+
+                user query
+                    |
+                    v
+                messenger
+                    |
+                    v
+                parse input
+                    |
+                    v
+                   yelp
+                    |
+                    v
+                find results
+                    |
+                    v
+                parse json for link
+                    |
+                    v
+                   send
+
+database - 1-1 user and current location
+     ------              ---------- 
+    | user | ---------- | location |
+     ------              ----------
+
+
+    
