@@ -104,6 +104,15 @@ def received_message_read(event):
     seq = event.read.get("seq")
     # print("Received message read event for watermark %s and sequence number %s" % (watermark, seq))
 
+@page.handle_echo
+def received_echo(event):
+    message = event.message
+    message_id = message.get("mid")
+    app_id = message.get("app_id")
+    metadata = message.get("metadata")
+    # print("page id : %s , %s" % (page.page_id, page.page_name))
+    # print("Received echo for message %s and app %s with metadata %s" % (message_id, app_id, metadata))
+
 @page.callback(['MENUPAYLOAD/(.+)'])
 def callback_clicked_p_menu(payload, event):
     sender_id = event.sender_id
