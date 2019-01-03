@@ -84,9 +84,8 @@ def message_handler(event):
     split = message.split(", ")
     print(split)
     results = yelp.get_results(split)
-    jason = json.load(results)
-    rv_name = jason[0][name]
-    rv_url = jason[0][url]
+    rv_name = results[0][name]
+    rv_url = results[0][url]
     page.send(sender_id, rv_name)
     page.send(sender_id, rv_url)
     return "Message processed"
