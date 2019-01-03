@@ -82,10 +82,10 @@ def message_handler(event):
 #            page.send(sender_id, "Already an Admin")
     # "san francisco, hot pot" OR "hot pot"
     split = message.split(", ")
-    print(split)
     results = yelp.get_results(split)
-    rv_name = results[0][name]
-    rv_url = results[0][url]
+    print(results)
+    rv_name = results["businesses"][name]
+    rv_url = results["businesses"][url]
     page.send(sender_id, rv_name)
     page.send(sender_id, rv_url)
     return "Message processed"
