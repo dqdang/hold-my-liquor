@@ -17,7 +17,7 @@ acct_menu_btns = [
 ]
 
 simple_menu_btns = [
-        Template.ButtonPostBack("Current Products", "MENUPAYLOAD/Products"),
+        Template.ButtonPostBack("Popular Choices", "MENUPAYLOAD/Popular Choices"),
 ]
 
 quick_replies = [
