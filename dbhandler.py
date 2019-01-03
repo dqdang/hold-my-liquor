@@ -9,15 +9,10 @@ import sqlalchemy as sql
 
 Base = declarative_base()
 
-# heroku pg:psql -a acrbot
+# heroku pg:psql -a hold-my-liquor
 # import dburl
 url = os.environ['HEROKU_POSTGRESQL_WHITE_URL']
 engine = sql.create_engine(url, pool_size=17, client_encoding='utf8')
-
-class Admins(Base):
-    __tablename__ = "admins"
-    user_id = Column(Integer, ForeignKey('users.id'), primary_key=True)
-    user = relationship('Users', uselist=False)
 
 # class Users(Base):
 #     __tablename__ = "users"
@@ -134,11 +129,8 @@ def insert_user(value):
     if user_exists(value, sess):
         sess.close()
         return False
-    
-    products = get_object(Products, sess)
-    
+        
     user = Users(fb_id=value)
-    user.subscriptions.extend(products)
     
     sess.add(user)
     sess.commit()
@@ -217,31 +209,3 @@ def delete_user(fb_id):
 
     sess.close()
     return False
-
-# def change_state(fb_id, state):
-#     sess = start_sess()
-#     user = user_exists(fb_id, sess)
-
-#     if user:
-#         user.state = state
-#         sess.commit()
-#         sess.close()
-#         return True
-
-#     sess.close()
-#     return False
-
-# def delete_sub(fb_id, prod_name):
-#     sess = start_sess()
-#     user = user_exists(fb_id, sess)
-#     prod = prod_exists(prod_name, sess)
-    
-#     if not prod or not user:
-#         sess.close()
-#         return False
-    
-#     user.subscriptions.remove(prod)
-#     sess.commit()
-#     sess.close()
-
-#     return True

@@ -9,7 +9,6 @@ import dbhandler as db
 import yelp as yelp
 
 password = os.environ["PASSWORD"]
-# admin_key = os.environ["ADMIN_KEY"]
 
 acct_menu_btns = [
         Template.ButtonPostBack("Food", "MENUPAYLOAD/Food"),
