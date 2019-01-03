@@ -30,7 +30,7 @@ page.greeting("Click Get Started below to subscribe!!")
 page.show_starting_button("Subscribe")
 
 def p_menu():
-    acct_menu = {"title":"Popular Choices"}
+    acct_menu = {"title":"Popular Choices", "type":"nested"}
     menu = [{"locale": "default", "composer_input_disabled": False, "call_to_actions": [acct_menu]}]
     call_to_actions = []
 
