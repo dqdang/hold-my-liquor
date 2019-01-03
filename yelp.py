@@ -8,13 +8,14 @@ import dbhandler as db
 import yppage as yp
 
 def get_results(query):
+    print(query)
     search_results = yp.yelp_api.search_query(query)
     return search_results
 
 def get_current():
     url = "https://yelp.com"
     
-    # while True:
+    while True:
 
     #     print("Checking if new products are on ACRNM on proxy: {}".format(site.proxy_used))
     #     if not site.get().ok:
