@@ -16,7 +16,7 @@ def get_current():
     url = "https://yelp.com"
     
     while True:
-
+        continue
     #     print("Checking if new products are on ACRNM on proxy: {}".format(site.proxy_used))
     #     if not site.get().ok:
     #         print("Proxy or website is unresponsive. Trying again...")
