@@ -10,7 +10,7 @@ import yppage as yp
 TIMEOUT = 600
 def get_results(query):
     if len(query) > 1:
-        search_results = yp.yelp_api.search_query(term=query[0], location=query[1], sort_by='best_match', limit=1)
+        search_results = yp.yelp_api.search_query(term=query[0].strip(), location=query[1].strip(), sort_by='best_match', limit=1)
     else:
         search_results = yp.yelp_api.search_query(term=query[0], location="san jose", sort_by='best_match', limit=1)
     return search_results
