@@ -3,7 +3,6 @@ from fbmq import QuickReply, Template
 
 import os
 import re
-import json
 import requests
 import dbhandler as db
 import yelp as yelp

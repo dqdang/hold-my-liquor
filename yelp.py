@@ -1,9 +1,7 @@
 from fbpage import page
-from flask import Flask, request
 
 import os
 import time
-import requests
 import dbhandler as db
 import yppage as yp
 
