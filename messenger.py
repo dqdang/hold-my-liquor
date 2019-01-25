@@ -37,14 +37,13 @@ def message_handler(event):
     sender_id = event.sender_id
     message = event.message.get('text').lower()
     message = re.sub("[\W+]", " ", message.upper())
-
+    message = message.strip()
+    
     if not message:
         return
 
     # "hot pot, san francisco" OR "hot pot"
-    print(message)
-    split = message.split(" ")
-    print(split)
+    split = message.split("  ")
     results = yelp.get_results(split)
     rv = general_query(results)
     page.send(sender_id, rv)
