@@ -8,8 +8,8 @@ import requests
 import dbhandler as db
 import yelp as yelp
 
-page.greeting("Click Get Started below to subscribe!!")
-page.show_starting_button("Subscribe")
+page.greeting("Click Get Started below to get started!!")
+page.show_starting_button("Get Started")
 
 def general_query(results):
     rv_name = results["businesses"][0]["name"]
