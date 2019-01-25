@@ -42,7 +42,8 @@ def message_handler(event):
         return
 
     # "hot pot, san francisco" OR "hot pot"
-    split = message.split(",")
+    print(message)
+    split = message.split(" ")
     print(split)
     results = yelp.get_results(split)
     rv = general_query(results)
