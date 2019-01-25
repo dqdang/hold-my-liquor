@@ -34,9 +34,12 @@ def received_postback(event):
 @page.handle_message
 def message_handler(event):
     sender_id = event.sender_id
-    message = event.message.get('text').lower()
-    message = re.sub("[\W+]", " ", message.upper())
-    message = message.strip()
+    try:
+        message = event.message.get('text').lower()
+        message = re.sub("[\W+]", " ", message.upper())
+        message = message.strip()
+    except:
+        return
     
     if not message:
         return
