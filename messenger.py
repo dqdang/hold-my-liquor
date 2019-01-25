@@ -28,7 +28,7 @@ def received_postback(event):
     payload = event.payload
 
     page.typing_on(sender_id)
-    page.send(sender_id, "Welcome! Search yelp for something like this:\nDish, Location.")
+    page.send(sender_id, "Welcome! Search yelp for something like this:\nDish, Location")
     page.typing_off(sender_id)
 
 @page.handle_message
