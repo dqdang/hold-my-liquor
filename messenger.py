@@ -8,8 +8,6 @@ import requests
 import dbhandler as db
 import yelp as yelp
 
-password = os.environ["PASSWORD"]
-
 page.greeting("Click Get Started below to subscribe!!")
 page.show_starting_button("Subscribe")
 
@@ -31,12 +29,7 @@ def received_postback(event):
 
     page.typing_on(sender_id)
 
-    if(payload == "Subscribe"):
-        if not db.user_exists(sender_id):
-            handle_unsub(sender_id)
-        else:
-            page.send(sender_id, "Already subscribed")
-
+    page.send("Welcome! Search yelp for something like this:\n Dish, Location.")
     page.typing_off(sender_id)
 
 @page.handle_message
@@ -48,7 +41,7 @@ def message_handler(event):
     if not message:
         return
 
-    # "san francisco, hot pot" OR "hot pot"
+    # "hot pot, san francisco" OR "hot pot"
     split = message.split(", ")
     results = yelp.get_results(split)
     rv = general_query(results)
