@@ -18,12 +18,10 @@ class Users(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     fb_id = Column(BigInteger, nullable=False, unique=True)
-    locations = Column(String, nullable=False, unique=True)
+    location = Column(String, nullable=False, unique=True)
 
 table_dict = {
-        "Users": Users,
-        # "Location": Location,
-        # "Current": Current
+        "Users": Users
 }
 
 def start_sess():
@@ -47,6 +45,7 @@ def insert_user(value):
         return False
         
     user = Users(fb_id=value)
+    user.location = "san francisco"
     
     sess.add(user)
     sess.commit()
@@ -65,12 +64,34 @@ def get_table(table, column):
     sess.close()
     return [] if len(results) == 0 else list(zip(*results))[0]
 
+def get_location(fb_id):
+    sess = start_sess()
+    user = user_exists(fb_id, sess)
+    if user:
+        rv = user.location
+        sess.close()
+        return rv
+    sess.close()
+    return None
+
+def change_location(fb_id, location):
+    sess = start_sess()
+    user = user_exists(fb_id, sess)
+
+    if user:
+        user.location = location
+        sess.commit()
+        sess.close()
+        return True
+
+    sess.close()
+    return False
+
 def delete_user(fb_id):
     sess = start_sess()
     user = user_exists(fb_id, sess)
 
     if user:
-        user.subscriptions.clear()
         sess.delete(user)
         sess.commit()
         sess.close()

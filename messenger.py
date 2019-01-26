@@ -24,7 +24,8 @@ def received_postback(event):
     payload = event.payload
 
     page.typing_on(sender_id)
-    page.send(sender_id, "Welcome! Search yelp for something like this:\nDish, Location")
+    page.send(sender_id, "Welcome! Search yelp for something like this:\nDISH, LOCATION\n\nChange default location with location=LOCATION")
+    db.insert_user(sender_id)
     page.typing_off(sender_id)
 
 @page.handle_message
@@ -32,6 +33,12 @@ def message_handler(event):
     sender_id = event.sender_id
     try:
         message = event.message.get('text').lower()
+        if("location=" in message):
+            message = message.split("=")[1]
+            db.change_location(sender_id, message)
+            send = "Changed default location to {}".format(message)
+            page.send(sender_id, send)
+            return
         message = re.sub("[\W+]", " ", message.upper())
         message = message.strip()
     except:
@@ -39,10 +46,10 @@ def message_handler(event):
     
     if not message:
         return
-
+    
     # "hot pot, san francisco" OR "hot pot"
     split = message.split("  ")
-    results = yelp.get_results(split)
+    results = yelp.get_results(sender_id, split)
     rv = general_query(results)
     page.send(sender_id, rv)
     return "Message processed"
