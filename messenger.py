@@ -41,6 +41,9 @@ def message_handler(event):
             return
         message = re.sub("[\W+]", " ", message.upper())
         message = message.strip()
+        if("CURRENT LOCATION" in message):
+            page.send(sender_id, db.get_location(sender_id))
+            return
     except:
         return
     
