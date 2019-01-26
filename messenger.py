@@ -16,9 +16,6 @@ def general_query(results):
     rv = rv_name + "\n_____\n" + rv_url
     return rv
 
-def handle_unsub(sender_id):
-    page.send(sender_id, "You are unsubscribed, enter access code to subscribe")
-
 @page.handle_postback
 def received_postback(event):    
     sender_id = event.sender_id
@@ -56,17 +53,10 @@ def received_delivery_confirmation(event):
     message_ids = delivery.get("mids")
     watermark = delivery.get("watermark")
 
-    # if message_ids:
-    #     for message_id in message_ids:
-            # print("Received delivery confirmation for message ID: %s" % message_id)
-
-    # print("All message before %s were delivered." % watermark)
-
 @page.handle_read
 def received_message_read(event):
     watermark = event.read.get("watermark")
     seq = event.read.get("seq")
-    # print("Received message read event for watermark %s and sequence number %s" % (watermark, seq))
 
 @page.handle_echo
 def received_echo(event):
@@ -74,5 +64,3 @@ def received_echo(event):
     message_id = message.get("mid")
     app_id = message.get("app_id")
     metadata = message.get("metadata")
-    # print("page id : %s , %s" % (page.page_id, page.page_name))
-    # print("Received echo for message %s and app %s with metadata %s" % (message_id, app_id, metadata))

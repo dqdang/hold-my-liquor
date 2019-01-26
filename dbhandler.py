@@ -14,31 +14,12 @@ Base = declarative_base()
 url = os.environ['HEROKU_POSTGRESQL_WHITE_URL']
 engine = sql.create_engine(url, pool_size=17, client_encoding='utf8')
 
-# class Users(Base):
-#     __tablename__ = "users"
-#     id = Column(Integer, primary_key=True)
-#     fb_id = Column(BigInteger, nullable=False, unique=True)
-#     locations = relationship('Location', secondary='current', backref=sql.orm.backref('current', lazy='dynamic'))
-
 class Users(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     fb_id = Column(BigInteger, nullable=False, unique=True)
     locations = Column(String, nullable=False, unique=True)
 
-# class Location(Base):
-#     __tablename__ = "location"
-#     id = Column(Integer, primary_key=True)
-#     location_name = Column(String, nullable=False, unique=True)
-    
-#     def __eq__(self, other):
-#         return self.location_name == other.location_name
-
-# class Current(Base):
-#     __tablename__ = "current"
-#     location_id = Column(Integer, ForeignKey('location.id'), primary_key=True)
-#     location = relationship('Location', uselist=False)
-    
 table_dict = {
         "Users": Users,
         # "Location": Location,
@@ -58,28 +39,6 @@ def create_tables():
 def user_exists(user, sess=start_sess()):
     return sess.query(Users).filter(Users.fb_id==user).scalar()
 
-# def location_exists(loc, sess):
-#     return sess.query(Location).filter(Location.loc_name.like(loc)).scalar()
-
-# def current_exists(cur, sess):
-#     return sess.query(Current).filter(Current.product.has(Location.location_name==cur)).scalar()
-
-# def insert_products(vlist):
-#     sess = start_sess()
-#     prods = []
-#     users = get_object(Users, sess)
-
-#     for v in vlist:
-#         product = Products(prod_name=v)
-#         product.subscribers.extend(users)
-#         prods.append(product)
-
-#     sess.add_all(prods)
-#     sess.commit()
-#     sess.close()
-
-#     return prods
-
 def insert_user(value):
     sess = start_sess()
     
@@ -94,35 +53,10 @@ def insert_user(value):
     sess.close()
     return True
 
-# def insert_current(vlist, url_list=None):
-#     sess = start_sess()
-#     prods = []
-
-#     sess.query(Current).delete()
-
-#     if not vlist:
-#         return
-
-#     for i, v in enumerate(vlist):
-#         prod = get_product(v, sess)
-#         curr = Current()
-#         curr.product = prod
-#         if url_list:
-#             curr.prod_url = url_list[i]
-#         prods.append(curr)
-
-#     sess.add_all(prods)
-#     sess.commit()
-#     sess.close()
-
 """ Private getters """
 def get_object(table, sess=start_sess()):
     results = sess.query(table).all()
     return results
-
-# def get_product(prod, sess=start_sess()):
-#     return sess.query(Products).filter(Products.prod_name==prod).first()
-
 
 """ Public getters """
 def get_table(table, column):
@@ -130,24 +64,6 @@ def get_table(table, column):
     results = sess.query(getattr(table_dict[table],column)).all()
     sess.close()
     return [] if len(results) == 0 else list(zip(*results))[0]
-
-# def get_current():
-#     sess = start_sess()
-#     current = sess.query(Products.prod_name).join(Current).all()
-#     sess.close()
-#     return list(zip(*current))[0]
-
-# def get_subscriptions(fb_id):
-#     sess = start_sess()
-#     user = user_exists(fb_id, sess)
-
-#     if user:
-#         rv = [prod.prod_name for prod in user.subscriptions]
-#         sess.close()
-#         return rv
-        
-#     sess.close()
-#     return None
 
 def delete_user(fb_id):
     sess = start_sess()
