@@ -1,5 +1,6 @@
 from fbpage import page
 from fbmq import QuickReply, Template
+from zipcode import search
 
 import os
 import re
@@ -39,6 +40,8 @@ def message_handler(event):
         message = event.message.get('text').lower()
         if("=" in message):
             message = message.split("=")[-1]
+            if(message.isdigit()):
+                message = search.by_zipcode(zipcode)[2]
             message = re.sub("[\W+]", " ", message.upper())
             message = message.strip()
             db.change_location(sender_id, message)
