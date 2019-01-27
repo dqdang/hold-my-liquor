@@ -12,9 +12,12 @@ page.show_starting_button("Get Started")
 
 def general_query(results):
     print(results)
-    rv_name = results["businesses"][0]["name"]
-    rv_url = results["businesses"][0]["url"]
-    rv = rv_name + "\n_____\n" + rv_url
+    try:
+        rv_name = results["businesses"][0]["name"]
+        rv_url = results["businesses"][0]["url"]
+        rv = rv_name + "\n_____\n" + rv_url
+    except:
+        rv = "yelp can't find that shit man."
     return rv
 
 @page.handle_postback
