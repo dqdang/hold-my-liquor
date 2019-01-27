@@ -31,6 +31,7 @@ def received_postback(event):
 @page.handle_message
 def message_handler(event):
     sender_id = event.sender_id
+    db.insert_user(sender_id)
     try:
         message = event.message.get('text').lower()
         if("location=" in message):
