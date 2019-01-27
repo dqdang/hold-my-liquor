@@ -37,8 +37,10 @@ def message_handler(event):
     sender_id = event.sender_id
     try:
         message = event.message.get('text').lower()
-        if("location=" in message):
-            message = message.split("=")[1]
+        if("=" in message):
+            message = message.split("=")[-1]
+            message = re.sub("[\W+]", " ", message.upper())
+            message = message.strip()
             db.change_location(sender_id, message)
             send = "Changed default location to {}".format(message)
             page.send(sender_id, send)
