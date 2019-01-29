@@ -16,7 +16,6 @@ def pingme():
     start = time.time()
     while True:
         time.sleep(60 - ((time.time() - start) % 60.0))
-        print("Time is: ", 60 - ((time.time() - start) % 60.0))
 
 if  __name__ == "__main__":
     db.create_tables()

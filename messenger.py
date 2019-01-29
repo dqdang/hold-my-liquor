@@ -8,7 +8,7 @@ import requests
 import dbhandler as db
 import yelp as yelp
 
-page.greeting("Click Get Started below to get started!!")
+page.greeting("Click Get Started below to get started!")
 page.show_starting_button("Get Started")
 
 def general_query(results):

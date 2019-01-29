@@ -1,4 +1,3 @@
-#!/usr/bin/python
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import joinedload, relationship, sessionmaker
 from sqlalchemy import Table, Column, Integer, BigInteger, String, ForeignKey, Sequence
@@ -53,7 +52,7 @@ def insert_user(value):
     return True
 
 """ Private getters """
-def get_object(table, sess=start_sess()):
+def _get_object(table, sess=start_sess()):
     results = sess.query(table).all()
     return results
 
