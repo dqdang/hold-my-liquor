@@ -11,6 +11,7 @@ import yelp as yelp
 page.greeting("Click Get Started below to get started!")
 page.show_starting_button("Get Started")
 
+
 def general_query(results):
     print(results)
     try:
@@ -21,8 +22,9 @@ def general_query(results):
         rv = "yelp can't find that shit man."
     return rv
 
+
 @page.handle_postback
-def received_postback(event):    
+def received_postback(event):
     sender_id = event.sender_id
     recipient_id = event.recipient_id
     time_of_postback = event.timestamp
@@ -32,6 +34,7 @@ def received_postback(event):
     page.send(sender_id, "Welcome! Search yelp for something like this:\nDISH, LOCATION\n\nChange default location with location=LOCATION")
     db.insert_user(sender_id)
     page.typing_off(sender_id)
+
 
 @page.handle_message
 def message_handler(event):
@@ -55,10 +58,10 @@ def message_handler(event):
             return
     except:
         return
-    
+
     if not message:
         return
-    
+
     # "hot pot, san francisco" OR "hot pot"
     split = message.split("  ")
     results = yelp.get_results(sender_id, split)
@@ -66,16 +69,19 @@ def message_handler(event):
     page.send(sender_id, rv)
     return "Message processed"
 
+
 @page.handle_delivery
 def received_delivery_confirmation(event):
     delivery = event.delivery
     message_ids = delivery.get("mids")
     watermark = delivery.get("watermark")
 
+
 @page.handle_read
 def received_message_read(event):
     watermark = event.read.get("watermark")
     seq = event.read.get("seq")
+
 
 @page.handle_echo
 def received_echo(event):
