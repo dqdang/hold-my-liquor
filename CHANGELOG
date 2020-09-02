@@ -1,3 +1,2 @@
-UPDATE v0.02
-Location based queries. Zipcode integration.
-Fix some bugs.
+UPDATE v1.2
+- Added NewRelic feature
