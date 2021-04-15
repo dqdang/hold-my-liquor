@@ -4,6 +4,6 @@ yelpapi==2.4.0
 fbmq==2.5.0
 psycopg2==2.8.6
 psycopg2-binary==2.8.6
-sqlalchemy==1.4.7
+sqlalchemy==1.4.8
 uszipcode==0.2.4
 newrelic==6.2.0.156
