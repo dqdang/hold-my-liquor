@@ -1,9 +1,9 @@
+fbmq==2.5.0
 Flask==1.1.2
 gunicorn==20.1.0
-yelpapi==2.4.0
-fbmq==2.5.0
+newrelic==6.2.0.156
 psycopg2==2.8.6
 psycopg2-binary==2.8.6
 sqlalchemy==1.4.10
 uszipcode==0.2.5
-newrelic==6.2.0.156
+yelpapi==2.4.0
