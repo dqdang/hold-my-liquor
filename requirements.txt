@@ -2,7 +2,7 @@ fbmq==2.5.0
 Flask==2.0.1
 gunicorn==20.1.0
 newrelic==6.4.1.158
-psycopg2==2.8.6
+psycopg2==2.9
 psycopg2-binary==2.9
 sqlalchemy==1.4.18
 uszipcode==0.2.6
