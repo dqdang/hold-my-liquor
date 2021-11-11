@@ -4,6 +4,6 @@ gunicorn==20.1.0
 newrelic==7.2.3.170
 psycopg2==2.9.1
 psycopg2-binary==2.9.1
-sqlalchemy==1.4.26
+sqlalchemy==1.4.27
 uszipcode==0.2.6
 yelpapi==2.4.0
