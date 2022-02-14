@@ -1,29 +1,27 @@
-from fbpage import page
 from flask import Flask, request
+from messenger import Messenger
 
+import dbhandler as db
 import os
-import messenger
 
 app = Flask(__name__)
-
-VERIFY_TOKEN = os.environ['VERIFY_TOKEN']
-
-
-@app.route('/webhook', methods=['GET'])
-def validate():
-    if request.args.get('hub.mode', '') == 'subscribe' and \
-            request.args.get('hub.verify_token', '') == VERIFY_TOKEN:
-        # print("Validating webhook")
-        return request.args.get('hub.challenge', '')
-    else:
-        return 'Failed validation. Make sure the validation tokens match.'
+app.debug = True
+messenger = Messenger(os.environ.get('ACCESS_TOKEN'))
 
 
-@app.route('/webhook', methods=['POST'])
+@app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
-    page.handle_webhook(request.get_data(as_text=True))
-    return "ok"
+    if request.method == 'GET':
+        if request.args.get('hub.verify_token') == os.environ.get('VERIFY_TOKEN'):
+            if request.args.get('init') and request.args.get('init') == 'true':
+                messenger.init_bot()
+                return ''
+            return request.args.get('hub.challenge')
+        raise ValueError('FB_VERIFY_TOKEN does not match.')
+    elif request.method == 'POST':
+        messenger.handle(request.get_json(force=True))
+    return ''
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
+    db.create_tables()
     app.run(threaded=True)
