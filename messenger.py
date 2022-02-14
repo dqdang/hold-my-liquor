@@ -54,7 +54,8 @@ def process_message(sender_id, message):
         if("CURRENT LOCATION" in message):
             response = Text(text=db.get_location(sender_id))
             return response.to_dict()
-    except:
+    except Exception as e:
+        print(e)
         return
 
     if not message:
@@ -63,6 +64,8 @@ def process_message(sender_id, message):
     split = message.split("  ")
     results = get_results(sender_id, split)
     rv = general_query(results)
+    response = Text(text=rv)
+    print(response)
     return response.to_dict()
 
 
@@ -75,7 +78,9 @@ class Messenger(BaseMessenger):
         sender_id = self.get_user_id()
         action = process_message(sender_id, message)
         if action:
+            print("Got action:". action)
             res = self.send(action, 'RESPONSE')
+        print("No action")
 
     def init_bot(self):
         self.add_whitelisted_domains('https://facebook.com/')
