@@ -12,7 +12,6 @@ yelp_api = YelpAPI(os.environ['YELP_KEY'], timeout_s=3.0)
 
 
 def general_query(results):
-    print('Results: {}'.format(results))
     try:
         rv_name = results["businesses"][0]["name"]
         rv_url = results["businesses"][0]["url"]
@@ -42,7 +41,8 @@ def process_message(sender_id, message):
             message = re.sub("[\W+]", " ", message.upper())
             message = message.strip()
             db.change_location(sender_id, message)
-            response = Text(text="Changed default location to {}".format(message))
+            response = Text(
+                text="Changed default location to {}".format(message))
             return response.to_dict()
         message = re.sub("[\W+]", " ", message.upper())
         message = message.strip()
@@ -58,11 +58,9 @@ def process_message(sender_id, message):
 
     split = message.split("  ")
     db.insert_user(int(sender_id))
-    raise Exception("{}, {}, {}".format(sender_id, db.user_exists(int(sender_id)), message))
     results = get_results(sender_id, split)
     rv = general_query(results)
     response = Text(text=rv)
-    print('Response: {}'.format(response))
     return response.to_dict()
 
 
@@ -75,22 +73,19 @@ class Messenger(BaseMessenger):
         sender_id = self.get_user_id()
         action = process_message(sender_id, message)
         if action:
-            raise Exception("Got action: {}".format(action))
-            print('Got action: {}'.format(action))
             res = self.send(action, 'RESPONSE')
-        raise Exception("No action")
-        print('No action.')
 
     def postback(self, message):
-        done = db.insert_user(self.get_user_id())
-        raise Exception("{}, ".format(done, db.user_exists(str(self.get_user_id()))))
-
+        db.insert_user(int(self.get_user_id()))
+        action = Text(text="Welcome. Change location using location=\'LOCATION\'.".format(
+            message)).to_dict()
+        res = self.send(action, 'RESPONSE')
 
     def init_bot(self):
         self.add_whitelisted_domains('https://facebook.com/')
-        greeting = GreetingText(text='Get started with the below button! Search any keyword.')
+        greeting = GreetingText(
+            text='Get started with the below button! Search any keyword.')
         self.set_messenger_profile(greeting.to_dict())
 
         get_started = GetStartedButton(payload='start')
         self.set_messenger_profile(get_started.to_dict())
-
