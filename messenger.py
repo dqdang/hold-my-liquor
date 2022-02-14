@@ -80,7 +80,7 @@ class Messenger(BaseMessenger):
 
 app = Flask(__name__)
 app.debug = True
-messenger = Messenger(os.environ.get('FB_PAGE_TOKEN'))
+messenger = Messenger(os.environ.get('ACCESS_TOKEN'))
 
 
 @app.route('/webhook', methods=['GET', 'POST'])
@@ -95,6 +95,10 @@ def webhook():
     elif request.method == 'POST':
         messenger.handle(request.get_json(force=True))
     return ''
+
+
+def run():
+    app.run(host='0.0.0.0')
 
 
 if __name__ == '__main__':

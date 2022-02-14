@@ -1,4 +1,4 @@
-from fbpage import page
+from messenger import run
 
 import os
 import time
