@@ -1,2 +1,2 @@
-worker: python yelp.py
+worker: python fbpage.py
 web: gunicorn server:app --log-file=-

@@ -1,12 +1,14 @@
-from flask import Flask, request
 from fbmessenger import BaseMessenger
+from yelpapi import YelpAPI
 from zipcode import search
 
 import os
 import re
 import requests
 import dbhandler as db
-import yelp as yelp
+
+
+yelp_api = YelpAPI(os.environ['YELP_KEY'], timeout_s=3.0)
 
 
 def general_query(results):
@@ -18,6 +20,16 @@ def general_query(results):
     except:
         rv = "yelp can't find that shit man."
     return rv
+
+
+def get_results(sender_id, query):
+    if len(query) > 1:
+        search_results = yelp_api.search_query(
+            term=query[0], location=query[1], sort_by='best_match', limit=1)
+    else:
+        search_results = yelp_api.search_query(
+            term=query[0], location=db.get_location(sender_id), sort_by='best_match', limit=1)
+    return search_results
 
 
 def process_message(message):
@@ -76,30 +88,3 @@ class Messenger(BaseMessenger):
 
         get_started = GetStartedButton(payload='Get Started')
         self.set_messenger_profile(get_started.to_dict())
-
-
-app = Flask(__name__)
-app.debug = True
-messenger = Messenger(os.environ.get('ACCESS_TOKEN'))
-
-
-@app.route('/webhook', methods=['GET', 'POST'])
-def webhook():
-    if request.method == 'GET':
-        if request.args.get('hub.verify_token') == os.environ.get('FB_VERIFY_TOKEN'):
-            if request.args.get('init') and request.args.get('init') == 'true':
-                messenger.init_bot()
-                return ''
-            return request.args.get('hub.challenge')
-        raise ValueError('FB_VERIFY_TOKEN does not match.')
-    elif request.method == 'POST':
-        messenger.handle(request.get_json(force=True))
-    return ''
-
-
-def run_app():
-    app.run(host='0.0.0.0')
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0')
