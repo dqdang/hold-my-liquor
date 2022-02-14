@@ -12,7 +12,7 @@ yelp_api = YelpAPI(os.environ['YELP_KEY'], timeout_s=3.0)
 
 
 def general_query(results):
-    app.logger.info('Results: {}'.format(results))
+    print('Results: {}'.format(results))
     try:
         rv_name = results["businesses"][0]["name"]
         rv_url = results["businesses"][0]["url"]
@@ -34,11 +34,6 @@ def get_results(sender_id, query):
 
 def process_message(sender_id, message):
     try:
-        payload = message['postback']['payload']
-        if 'start' in payload:
-            db.insert_user(sender_id)
-            response = Text(text="Welcome! Search yelp for something like this:\nDISH, LOCATION\n\nChange default location with location=LOCATION")
-            return response.to_dict()
         message = message['message']['text'].lower()
         if("=" in message):
             message = message.split("=")[-1]
@@ -55,7 +50,7 @@ def process_message(sender_id, message):
             response = Text(text=db.get_location(sender_id))
             return response.to_dict()
     except Exception as e:
-        app.logger.info('Exception: {}'.format(e))
+        print('Exception: {}'.format(e))
         return
 
     if not message:
@@ -65,7 +60,7 @@ def process_message(sender_id, message):
     results = get_results(sender_id, split)
     rv = general_query(results)
     response = Text(text=rv)
-    app.logger.info('Response: {}'.format(response))
+    print('Response: {}'.format(response))
     return response.to_dict()
 
 
@@ -78,9 +73,16 @@ class Messenger(BaseMessenger):
         sender_id = self.get_user_id()
         action = process_message(sender_id, message)
         if action:
-            app.logger.info('Got action: {}'.format(action))
+            print('Got action: {}'.format(action))
             res = self.send(action, 'RESPONSE')
-        app.logger.info('No action.')
+        print('No action.')
+
+    def postback(self, message):
+        payload = message['postback']['payload']
+        if 'start' in payload:
+            db.insert_user(sender_id)
+            response = Text(text="Welcome! Search yelp for something like this:\nDISH, LOCATION\n\nChange default location with location=LOCATION")
+            self.send(response.to_dict, 'RESPONSE')
 
     def init_bot(self):
         self.add_whitelisted_domains('https://facebook.com/')

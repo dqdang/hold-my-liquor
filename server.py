@@ -5,7 +5,7 @@ import dbhandler as db
 import os
 
 app = Flask(__name__)
-app.debug = True
+# app.debug = True
 messenger = Messenger(os.environ.get('ACCESS_TOKEN'))
 
 
