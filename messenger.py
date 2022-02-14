@@ -1,4 +1,5 @@
 from fbmessenger import BaseMessenger
+from fbmessenger.elements import Text
 from yelpapi import YelpAPI
 from zipcode import search
 
