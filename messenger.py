@@ -57,7 +57,7 @@ def process_message(sender_id, message):
         return
 
     split = message.split("  ")
-    print(split)
+    raise Exception("{}, {}, {}".format(sender_id, db.user_exists(sender_id), message))
     results = get_results(sender_id, split)
     rv = general_query(results)
     response = Text(text=rv)
