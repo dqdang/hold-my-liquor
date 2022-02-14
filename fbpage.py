@@ -1,6 +1,7 @@
 from flask import Flask, request
 from messenger import Messenger
 
+import dbhandler as db
 import os
 
 app = Flask(__name__)
