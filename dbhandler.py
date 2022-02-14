@@ -10,7 +10,9 @@ Base = declarative_base()
 
 # heroku pg:psql -a hold-my-liquor
 # import dburl
-url = os.environ['HEROKU_POSTGRESQL_WHITE_URL']
+uri = os.getenv("DATABASE_URL")  # or other relevant config var
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
 engine = sql.create_engine(url, pool_size=17, client_encoding='utf8')
 
 
