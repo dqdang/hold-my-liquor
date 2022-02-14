@@ -1,6 +1,8 @@
 from flask import Flask, request
 from messenger import Messenger
 
+import os
+
 app = Flask(__name__)
 app.debug = True
 messenger = Messenger(os.environ.get('ACCESS_TOKEN'))
