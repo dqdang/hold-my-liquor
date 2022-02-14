@@ -32,7 +32,7 @@ def get_results(sender_id, query):
     return search_results
 
 
-def process_message(message):
+def process_message(sender_id, message):
     try:
         message = message['message']['text'].lower()
         if("=" in message):
@@ -42,14 +42,12 @@ def process_message(message):
             message = re.sub("[\W+]", " ", message.upper())
             message = message.strip()
             db.change_location(sender_id, message)
-            send = Text(text="Changed default location to {}".format(message))
-            page.send(sender_id, send)
+            response = Text(text="Changed default location to {}".format(message))
             return response.to_dict()
         message = re.sub("[\W+]", " ", message.upper())
         message = message.strip()
         if("CURRENT LOCATION" in message):
-            send = Text(text=db.get_location(sender_id))
-            page.send(sender_id, db.get_location(sender_id))
+            response = Text(text=db.get_location(sender_id))
             return response.to_dict()
     except:
         return
@@ -69,17 +67,17 @@ class Messenger(BaseMessenger):
         super(Messenger, self).__init__(self.page_access_token)
 
     def message(self, message):
-        action = process_message(message)
+        sender_id = self.get_user_id()
+        action = process_message(sender_id, message)
         if action:
             res = self.send(action, 'RESPONSE')
 
     def postback(self, message):
         payload = message['postback']['payload']
         sender_id = self.get_user_id()
-        page.typing_on(sender_id)
-        page.send(sender_id, "Welcome! Search yelp for something like this:\nDISH, LOCATION\n\nChange default location with location=LOCATION")
         db.insert_user(sender_id)
-        page.typing_off(sender_id)
+        response = Text(text="Welcome! Search yelp for something like this:\nDISH, LOCATION\n\nChange default location with location=LOCATION")
+        res = self.send(response.to_dict(), 'RESPONSE')
 
     def init_bot(self):
         self.add_whitelisted_domains('https://facebook.com/')
