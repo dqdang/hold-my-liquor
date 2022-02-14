@@ -58,7 +58,7 @@ def process_message(message):
         return
 
     split = message.split("  ")
-    results = yelp.get_results(sender_id, split)
+    results = get_results(sender_id, split)
     rv = general_query(results)
     return response.to_dict()
 
