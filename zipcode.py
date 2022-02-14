@@ -1,6 +1,6 @@
 from uszipcode import SearchEngine
 
-search = SearchEngine(simple_zipcode=True)
+search = SearchEngine()
 
 
 def find_zip(zipcode):
