@@ -75,14 +75,15 @@ class Messenger(BaseMessenger):
     def postback(self, message):
         payload = message['postback']['payload']
         sender_id = self.get_user_id()
-        db.insert_user(sender_id)
-        response = Text(text="Welcome! Search yelp for something like this:\nDISH, LOCATION\n\nChange default location with location=LOCATION")
-        res = self.send(response.to_dict(), 'RESPONSE')
+        if 'start' in payload:
+            db.insert_user(sender_id)
+            response = Text(text="Welcome! Search yelp for something like this:\nDISH, LOCATION\n\nChange default location with location=LOCATION")
+            res = self.send(response.to_dict(), 'RESPONSE')
 
     def init_bot(self):
         self.add_whitelisted_domains('https://facebook.com/')
         greeting = GreetingText(text='Get started with the below button!.')
         self.set_messenger_profile(greeting.to_dict())
 
-        get_started = GetStartedButton(payload='Get Started')
+        get_started = GetStartedButton(payload='start')
         self.set_messenger_profile(get_started.to_dict())
