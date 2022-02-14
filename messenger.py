@@ -86,5 +86,5 @@ class Messenger(BaseMessenger):
         get_started = GetStartedButton(payload='start')
         self.set_messenger_profile(get_started.to_dict())
 
-        db.insert_user(self.get_user_id())
-        print(db.user_exists(self.get_user_id()))
+        done = db.insert_user(self.get_user_id())
+        raise Exception("{}, ".format(done, db.user_exists(str(self.get_user_id()))))
