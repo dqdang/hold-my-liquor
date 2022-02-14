@@ -12,7 +12,7 @@ yelp_api = YelpAPI(os.environ['YELP_KEY'], timeout_s=3.0)
 
 
 def general_query(results):
-    print(results)
+    app.logger.debug('Results: {}'.format(results))
     try:
         rv_name = results["businesses"][0]["name"]
         rv_url = results["businesses"][0]["url"]
@@ -55,7 +55,7 @@ def process_message(sender_id, message):
             response = Text(text=db.get_location(sender_id))
             return response.to_dict()
     except Exception as e:
-        print(e)
+        app.logger.debug('Exception: {}'.format(e))
         return
 
     if not message:
@@ -65,7 +65,7 @@ def process_message(sender_id, message):
     results = get_results(sender_id, split)
     rv = general_query(results)
     response = Text(text=rv)
-    print(response)
+    app.logger.debug('Response: {}'.format(response))
     return response.to_dict()
 
 
@@ -78,9 +78,9 @@ class Messenger(BaseMessenger):
         sender_id = self.get_user_id()
         action = process_message(sender_id, message)
         if action:
-            print("Got action:". action)
+            app.logger.debug('Got action: {}'.format(action))
             res = self.send(action, 'RESPONSE')
-        print("No action")
+        app.logger.debug('No action.')
 
     def init_bot(self):
         self.add_whitelisted_domains('https://facebook.com/')
