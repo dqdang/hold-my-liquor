@@ -97,7 +97,7 @@ def webhook():
     return ''
 
 
-def run():
+def run_app():
     app.run(host='0.0.0.0')
 
 

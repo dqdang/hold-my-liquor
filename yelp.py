@@ -1,4 +1,4 @@
-from messenger import run
+from messenger import run_app
 
 import os
 import time
