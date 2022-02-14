@@ -50,7 +50,7 @@ def process_message(sender_id, message):
             response = Text(text=db.get_location(sender_id))
             return response.to_dict()
     except Exception as e:
-        print('Exception: {}'.format(e))
+        raise Exception('Exception: {}'.format(e))
         return
 
     if not message:
@@ -74,9 +74,16 @@ class Messenger(BaseMessenger):
         sender_id = self.get_user_id()
         action = process_message(sender_id, message)
         if action:
+            raise Exception("Got action: {}".format(action))
             print('Got action: {}'.format(action))
             res = self.send(action, 'RESPONSE')
+        raise Exception("No action")
         print('No action.')
+
+    def postback(self, message):
+        done = db.insert_user(self.get_user_id())
+        raise Exception("{}, ".format(done, db.user_exists(str(self.get_user_id()))))
+
 
     def init_bot(self):
         self.add_whitelisted_domains('https://facebook.com/')
@@ -86,5 +93,3 @@ class Messenger(BaseMessenger):
         get_started = GetStartedButton(payload='start')
         self.set_messenger_profile(get_started.to_dict())
 
-        done = db.insert_user(self.get_user_id())
-        raise Exception("{}, ".format(done, db.user_exists(str(self.get_user_id()))))
