@@ -34,6 +34,11 @@ def get_results(sender_id, query):
 
 def process_message(sender_id, message):
     try:
+        payload = message['postback']['payload']
+        if 'start' in payload:
+            db.insert_user(sender_id)
+            response = Text(text="Welcome! Search yelp for something like this:\nDISH, LOCATION\n\nChange default location with location=LOCATION")
+            return response.to_dict()
         message = message['message']['text'].lower()
         if("=" in message):
             message = message.split("=")[-1]
@@ -71,14 +76,6 @@ class Messenger(BaseMessenger):
         action = process_message(sender_id, message)
         if action:
             res = self.send(action, 'RESPONSE')
-
-    def postback(self, message):
-        payload = message['postback']['payload']
-        sender_id = self.get_user_id()
-        if 'start' in payload:
-            db.insert_user(sender_id)
-            response = Text(text="Welcome! Search yelp for something like this:\nDISH, LOCATION\n\nChange default location with location=LOCATION")
-            res = self.send(response.to_dict(), 'RESPONSE')
 
     def init_bot(self):
         self.add_whitelisted_domains('https://facebook.com/')
