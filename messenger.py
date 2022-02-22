@@ -32,9 +32,7 @@ def get_results(sender_id, query):
             search_results = yelp_api.search_query(
             term=query[0], location=db.get_location(sender_id), sort_by='best_match', limit=1)
         except:
-            raise Exception(db.get_location(sender_id))
-            yelp_api.search_query(
-            term=query[0], location=db.get_location(sender_id), sort_by='best_match', limit=1)
+            return "Please change default location. Cannot find result for location: {}".format(db.get_location(sender_id))
     return search_results
 
 
