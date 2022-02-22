@@ -23,6 +23,7 @@ def general_query(results):
 
 
 def get_results(sender_id, query):
+    sender_id = int(sender_id)
     if len(query) > 1:
         search_results = yelp_api.search_query(
             term=query[0], location=query[1], sort_by='best_match', limit=1)
@@ -33,6 +34,7 @@ def get_results(sender_id, query):
 
 
 def process_message(sender_id, message):
+    sender_id = int(sender_id)
     try:
         message = message['message']['text'].lower()
         if("=" in message):
@@ -57,7 +59,7 @@ def process_message(sender_id, message):
         return
 
     split = message.split("  ")
-    db.insert_user(int(sender_id))
+    db.insert_user(sender_id)
     results = get_results(sender_id, split)
     rv = general_query(results)
     response = Text(text=rv)
