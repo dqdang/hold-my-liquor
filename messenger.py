@@ -28,7 +28,12 @@ def get_results(sender_id, query):
         search_results = yelp_api.search_query(
             term=query[0], location=query[1], sort_by='best_match', limit=1)
     else:
-        search_results = yelp_api.search_query(
+        try:
+            search_results = yelp_api.search_query(
+            term=query[0], location=db.get_location(sender_id), sort_by='best_match', limit=1)
+        except:
+            print(db.get_location(sender_id))
+            yelp_api.search_query(
             term=query[0], location=db.get_location(sender_id), sort_by='best_match', limit=1)
     return search_results
 
