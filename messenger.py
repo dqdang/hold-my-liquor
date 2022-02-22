@@ -50,8 +50,7 @@ def process_message(sender_id, message):
         if("CURRENT LOCATION" in message):
             response = Text(text=db.get_location(sender_id))
             return response.to_dict()
-    except Exception as e:
-        raise Exception('Exception: {}'.format(e))
+    except: 
         return
 
     if not message:
