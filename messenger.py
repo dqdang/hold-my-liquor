@@ -85,6 +85,7 @@ class Messenger(BaseMessenger):
         action = Text(text="Welcome. Change location using location=\'LOCATION\'.".format(
             message)).to_dict()
         res = self.send(action, 'RESPONSE')
+        self.delete_get_started()
 
     def init_bot(self):
         self.add_whitelisted_domains('https://facebook.com/')
