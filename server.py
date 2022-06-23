@@ -18,7 +18,7 @@ def webhook():
                 return ''
             return request.args.get('hub.challenge')
         raise ValueError('FB_VERIFY_TOKEN does not match.')
-    elif request.method == 'POST':
+    else: # request.method == 'POST':
         messenger.handle(request.get_json(force=True))
     return ''
 
