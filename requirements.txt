@@ -6,4 +6,4 @@ psycopg2==2.9.3
 psycopg2-binary==2.9.3
 sqlalchemy==1.4.39
 uszipcode==1.0.1
-yelpapi==2.4.0
+yelpapi==2.4.1
