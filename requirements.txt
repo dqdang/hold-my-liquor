@@ -3,7 +3,7 @@ Flask==2.3.2
 gunicorn==21.2.0
 python-Levenshtein==0.21.1
 psycopg2==2.9.7
-psycopg2-binary==2.9.6
+psycopg2-binary==2.9.7
 sqlalchemy==2.0.19
 uszipcode==1.0.1
 yelpapi==2.5.0
