@@ -1,7 +1,7 @@
 fbmessenger==6.0.0
 Flask==2.3.3
 gunicorn==21.2.0
-python-Levenshtein==0.21.1
+python-Levenshtein==0.22.0
 psycopg2==2.9.7
 psycopg2-binary==2.9.7
 sqlalchemy==2.0.21
