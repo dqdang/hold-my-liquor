@@ -4,6 +4,6 @@ gunicorn==23.0.0
 python-Levenshtein==0.27.1
 psycopg2==2.9.10
 psycopg2-binary==2.9.10
-sqlalchemy==2.0.40
+sqlalchemy==2.0.41
 uszipcode==1.0.1
 yelpapi==2.5.1
